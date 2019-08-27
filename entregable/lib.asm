@@ -1,6 +1,6 @@
 
 section .rodata
-
+    ASCII_NULL EQU "/0"
 section .text
 
 extern malloc
@@ -28,6 +28,25 @@ global hashTableDeleteSlot
 global hashTableDelete
 
 strLen:
+    ; uint32_t strLen(char* pString)
+    ;  Retorna la cantidad de caracteres, contando desde el primer caracter
+    ;  hasta el último sin el caracter nulo (cero).
+
+    ; res     = rax
+    ; pString = rdi
+
+    xor rax, rax    ; Vacio rax por si tiene basura
+
+    ; Recorro desde pString hasta el caracter nulo, cuando llego, termine
+    .loop:
+    test byte [rdi], ASCII_NULL
+    jz .end
+
+    inc rax     ; Incremento longitud
+    inc rdi     ; Avanzo puntero
+    jmp .loop
+
+    .end:
     ret
 
 strClone:
