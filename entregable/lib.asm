@@ -1,8 +1,3 @@
-
-section .rodata
-    ASCII_NULL EQU "/0"
-section .text
-
 extern malloc
 extern free
 extern fprintf
@@ -27,6 +22,10 @@ global hashTableAdd
 global hashTableDeleteSlot
 global hashTableDelete
 
+section .rodata
+    ASCII_NULL EQU "/0"
+
+section .text
 strLen:
     ; uint32_t strLen(char* pString)
     ;  Retorna la cantidad de caracteres, contando desde el primer caracter
