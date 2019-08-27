@@ -1,5 +1,7 @@
 #include "lib.h"
 
+
+
 /** STRING **/
 
 char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
