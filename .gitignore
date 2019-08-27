@@ -1,2 +1,6 @@
 # GDB
 .gdb_history
+
+# Entregable y compilados
+*.o
+main
