@@ -115,7 +115,66 @@ _strCopy:
         ret
 
 strCmp:
-    ret
+    ; int32_t strCmp(char* pStringA, char* pStringB)
+    ;  Compara dos strings en orden lexicográfico. Retorna:
+    ;    0 si son iguales
+    ;    1 si a < b
+    ;   −1 si b < a
+    ;
+    ; Noto que como el fin de cadena es 0, la cadena vacía es la mas chica
+    ; Realizo las comparaciones por la codificación ascii
+
+    ; rdi = pStringA
+    ; rsi = pStringB
+
+    ; Stack frame
+    push rbp
+    mov rbp, rsp
+    ; Preservo r12 y r13
+    push r12
+    push r13        
+
+    mov r12, rdi ; r12 = pStringA
+    mov r13, rsi ; r13 = pStringB
+    
+    xor rcx, rcx ; uso rcx como offset
+
+    .loop:
+        cmp byte [r12 + rcx], ASCII_NULL    ; Recorro hasta que A sea null
+        je .endloop
+        ; Comparo A y B mediante un registro intermedio de 8 bits
+        mov al, [r12 + rcx]
+        cmp byte al, [r13 + rcx]
+        jb .a  ; a < b
+        ja .b  ; a > b
+        ; a = b, sigo
+        inc rcx
+        jmp .loop
+
+    .endloop:
+        ; Si al haber recorrido todo A sigo teniendo caracteres en B,
+        ; Entonces b es mayor
+        cmp byte [r13 + rcx], ASCII_NULL
+        jne .a
+        ; Son iguales
+        jmp .eq
+
+    .a:
+        mov rax, 1
+        jmp .fin
+    .b:
+        mov rax, -1
+        jmp .fin
+    .eq:
+        xor rax, rax
+        jmp .fin
+
+    .fin:
+        ; Reestablezco registros
+        pop r13
+        pop r12
+        pop rbp
+        ret
 
 strConcat:
     ret

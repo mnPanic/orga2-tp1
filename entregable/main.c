@@ -29,6 +29,20 @@ void test_string(FILE *pfile) {
 
     fprintf(pfile, "strClone(%s) = %s\n", str, strClone(str));
     // res: strClone(hola manola) = hola manola
+
+    /* strCmp */
+    fprintf(pfile, "# strCmp\n");
+    fprintf(pfile, "strCmp(a, b) = %i\n", strCmp("a", "b"));
+    // strCmp(a, b) = 1
+    fprintf(pfile, "strCmp(w, a) = %i\n", strCmp("w", "a"));
+    // strCmp(w, a) = -1
+    fprintf(pfile, "strCmp(x, x) = %i\n", strCmp("x", "x"));
+    // strCmp(x, x) = 0
+    fprintf(pfile, "strCmp(abcde, abcd) = %i\n", strCmp("abcde", "abcd"));
+    // strCmp(abcde, abcd) = -1
+    fprintf(pfile, "strCmp(abc, abcd) = %i\n", strCmp("abc", "abcd"));
+    // strCmp(abc, abcd) = 1
+
 }
 
 int main (void){

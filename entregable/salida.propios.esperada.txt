@@ -4,3 +4,9 @@ len(esto es una prueba) = 18
 len() = 0
 # strClone
 strClone(hola manola) = hola manola
+# strCmp
+strCmp(a, b) = 1
+strCmp(w, a) = -1
+strCmp(x, x) = 0
+strCmp(abcde, abcd) = -1
+strCmp(abc, abcd) = 1
