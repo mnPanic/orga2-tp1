@@ -26,6 +26,10 @@ global hashTableDelete
 ; least significant half mask
 %define LSH_MASK 0x00000000FFFFFFFF
 
+section .rodata:
+    STR_FMT:  db "%s", 0
+    STR_NULL: db "NULL", 0
+
 section .text
 strLen:
     ; uint32_t strLen(char* pString)
@@ -260,6 +264,35 @@ strDelete:
     ret
  
 strPrint:
+    ; void strPrint(char* pString, FILE *pFile)
+    ;  Escribe el string en el stream indicado a través de pFile. 
+    ;  Si el string es vacı́o debe escribir “NULL”.
+
+    ; rdi = pString
+    ; rsi = pFile
+
+    ; Quiero llamar a 
+    ;  int fprintf(FILE *stream, const char *format, ...);
+    ;   rdi = FILE
+    ;   rsi = fmt
+    ;   rdx = pString (o NULL)
+
+    ; Me alineo a 16
+    sub rsp, 8
+
+    mov r8, rdi         ; r8 = pString
+    mov rdi, rsi        ; rdi = pFile
+    mov rsi, STR_FMT    ; rsi = FMT
+
+    ; Veo si el string es vacio
+    cmp byte [r8], ASCII_NULL
+    jne .continue
+    mov r8, STR_NULL    ; Cambio el contenido por "NULL"
+    .continue:
+        mov rdx, r8
+        call fprintf
+
+    add rsp, 8
     ret
     
 listNew:

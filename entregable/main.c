@@ -60,6 +60,15 @@ void test_string(FILE *pfile) {
     fprintf(pfile, "strConcat(aa, ) = %s\n", strConcat(strClone("aa"), strClone("")));
     // strConcat(aa, ) = aa
 
+    /* strPrint */
+    fprintf(pfile, "# strPrint\n");
+    strPrint("hola hola", pfile);
+    fprintf(pfile, "\n");
+    // hola hola
+    strPrint("", pfile);
+    fprintf(pfile, "\n");
+    // NULL
+
 }
 
 int main (void){

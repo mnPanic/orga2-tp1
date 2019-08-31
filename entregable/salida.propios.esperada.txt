@@ -17,3 +17,6 @@ strConcat(a, a) = aa
 strConcat(abas, hola espacio) = abashola espacio
 strConcat(aa, aa) = aaaa
 strConcat(aa, ) = aa
+# strPrint
+hola hola
+NULL
