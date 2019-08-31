@@ -10,3 +10,10 @@ strCmp(w, a) = -1
 strCmp(x, x) = 0
 strCmp(abcde, abcd) = -1
 strCmp(abc, abcd) = 1
+strCmp(abcdef, ) = -1
+strCmp(, abcdef) = 1
+# strConcat
+strConcat(a, a) = aa
+strConcat(abas, hola espacio) = abashola espacio
+strConcat(aa, aa) = aaaa
+strConcat(aa, ) = aa

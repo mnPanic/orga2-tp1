@@ -43,6 +43,22 @@ void test_string(FILE *pfile) {
     // strCmp(abcde, abcd) = -1
     fprintf(pfile, "strCmp(abc, abcd) = %i\n", strCmp("abc", "abcd"));
     // strCmp(abc, abcd) = 1
+    fprintf(pfile, "strCmp(abcdef, ) = %i\n", strCmp("abcdef", ""));
+    // strCmp(abcdef,) = -1
+    fprintf(pfile, "strCmp(, abcdef) = %i\n", strCmp("", "abcdef"));
+    // strCmp(, abcdef) = 1
+
+    /* strConcat */
+    fprintf(pfile, "# strConcat\n");
+    char * a = strClone("a"); // el free lo hace concat
+    fprintf(pfile, "strConcat(a, a) = %s\n", strConcat(a, a));
+    // strConcat(a, a) = aa
+    fprintf(pfile, "strConcat(abas, hola espacio) = %s\n", strConcat(strClone("abas"), strClone("hola espacio")));
+    // strConcat(abas, hola espacio) = abashola espacio
+    fprintf(pfile, "strConcat(aa, aa) = %s\n", strConcat(strClone("aa"), strClone("aa")));
+    // strConcat(aa, aa) = aaaa
+    fprintf(pfile, "strConcat(aa, ) = %s\n", strConcat(strClone("aa"), strClone("")));
+    // strConcat(aa, ) = aa
 
 }
 

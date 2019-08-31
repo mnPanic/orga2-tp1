@@ -180,6 +180,68 @@ strCmp:
         ret
 
 strConcat:
+    ; char* strConcat(char* pStringA, char* pStringB)
+    ;  Genera un nuevo string con la concatenación de a y b.
+    ;  Libera la memoria ocupada por estos últimos.
+    ;  Nota: Puede haber aliasing
+
+    ; rdi = pStringA
+    ; rsi = pStringB
+
+    ; Preservo registros
+    push r12
+    push r13
+    push r14
+
+    mov r12, rdi    ; r12 = pStringA
+    mov r13, rsi    ; r13 = pStringB
+
+    ; Obtengo el largo del nuevo string (C)
+    ; pStringA ya está en rdi
+    call strLen     ; rax = len(A)
+    mov r8, rax     ; r8  = len(A)
+
+    mov rdi, r13
+    call strLen     ; rax = len(B)
+    add r8, rax     ; r8  = len(A) + len(B)
+
+    ; Reservo la memoria
+    mov rdi, r8
+    call malloc     ; rax = pStringC
+    mov r14, rax    ; r14 = pStringC
+
+    ; Copio los contenidos de A y B con _strCopy
+    ; _strCopy(dst: C, src: A, offset: 0)
+    mov rdi, r14    ; dst = C
+    mov rsi, r12    ; src = A
+    xor rdx, rdx    ; off = 0
+    call _strCopy   ; rax = consumed = len(A)
+
+    ; _strCopy(dst: C, src: B, offset: len(A))
+    mov rdi, r14    ; dst = C
+    mov rsi, r13    ; src = B
+    mov rdx, rax    ; off = consumed = len(A)
+    call _strCopy
+
+    ; Libero la memoria de A y B (puede haber aliasing)
+    cmp r12, r13    ; Si A y B apuntan a lo mismo,
+    jmp .b          ; solo borro uno
+    ; Borro A
+    mov rdi, r12
+    call free
+    
+    .b:
+        ; Borro B
+        mov rdi, r13
+        call free
+    
+    ; Retorno C
+    mov rax, r14
+
+    ; Reestablezco stack y registros
+    pop r14
+    pop r13
+    pop r12
     ret
 
 strDelete:
