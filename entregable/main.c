@@ -26,8 +26,9 @@ void test_string(FILE *pfile) {
     /* strClone */
     fprintf(pfile, "# strClone\n");
     char* str = "hola manola";
-
-    fprintf(pfile, "strClone(%s) = %s\n", str, strClone(str));
+    char* cn = strClone(str);
+    fprintf(pfile, "strClone(%s) = %s\n", str, cn);
+    free(cn);
     // res: strClone(hola manola) = hola manola
 
     /* strCmp */
