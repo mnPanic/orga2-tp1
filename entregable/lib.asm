@@ -22,8 +22,7 @@ global hashTableAdd
 global hashTableDeleteSlot
 global hashTableDelete
 
-section .rodata
-    ASCII_NULL EQU "/0"
+%define ASCII_NULL "/0"
 
 section .text
 strLen:
