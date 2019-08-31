@@ -1,4 +1,0 @@
-string
-# strLen
-len(esto es una prueba) = 18
-len() = 0

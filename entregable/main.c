@@ -19,8 +19,16 @@ void test_string(FILE *pfile) {
     fprintf(pfile, "# strLen\n");
     fprintf(pfile, "len(%s) = %i\n", prueba, strLen(prueba));
     // res: len(esto es una prueba) = 18
+
     fprintf(pfile, "len(%s) = %i\n", "", strLen(""));
     // res: len() = 0
+
+    /* strClone */
+    fprintf(pfile, "# strClone\n");
+    char* str = "hola manola";
+
+    fprintf(pfile, "strClone(%s) = %s\n", str, strClone(str));
+    // res: strClone(hola manola) = hola manola
 }
 
 int main (void){
