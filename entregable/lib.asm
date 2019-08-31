@@ -70,8 +70,8 @@ strClone:
     call malloc     ; rax = ptr a nuevo string
 
     ; Copio el contenido de pString a el nuevo string llamando a _strCopy
-    mov rdi, r12    ; str    = pString
-    mov rsi, rax    ; into   = ptr a nuevo string
+    mov rdi, rax    ; dst   = ptr a nuevo string
+    mov rsi, r12    ; src   = pString
     xor rdx, rdx    ; offset = 0    
     mov r13, rax    ; preservo rax
     call _strCopy
@@ -86,29 +86,32 @@ strClone:
 
 ; Rutina auxiliar
 _strCopy:
-    ; void _strCopy(char* str, into, int off)
-    ;   Copia los caracteres de str a into, desde el offset off hasta el fin
-    ;   del string, codificado por el caracter nulo.
+    ; int32_t _strCopy(char* dst, char* src, int offset_dst)
+    ;   Copia el contenido de src a dst desde el offset_dst especificado.
+    ;   Devuelve la cantidad de caracteres copiados (i.e len(from))
     ;   Supone que into es suficientemente grande.
-    
-    ; rdi = str
-    ; rsi = into
-    ; edx  = off
 
-    ; Limpio la parte alta de rdx (offset) para usarla como indice
+    ; rdi = dst (d = destination)
+    ; rsi = src (s = source)
+    ; edx = offset_dst
+    ; rax = offset_src
+
+    ; Limpio la parte alta de rdx (offset) para usarla como offset de dst
     and rdx, LSH_MASK
+    ; Limpio rax para usarlo como offset de src
+    xor rax, rax
 
     .loop:
-        cmp byte [rdi + rdx], ASCII_NULL   ; Si estoy leyendo el caracter nulo,
+        cmp byte [rsi + rax], ASCII_NULL   ; Si estoy leyendo el caracter nulo,
         je .end                            ; termine.
 
-        ; Copio el caracter actual de str a into usando un 
+        ; Copio el caracter actual de src a dst usando un 
         ; registro intermedio de 8 bits
-        mov al, [rdi + rdx]
-        mov [rsi + rdx], al
+        mov r8b, [rsi + rax]
+        mov [rdi + rdx], r8b
 
-        ; Incremento el offset
-        inc rdx
+        inc rdx ; offset_dst++
+        inc rax ; offset_src++
         jmp .loop
 
     .end:
