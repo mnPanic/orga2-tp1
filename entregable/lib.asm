@@ -22,6 +22,11 @@ global hashTableAdd
 global hashTableDeleteSlot
 global hashTableDelete
 
+%define NULL, 0
+
+; String
+; ======
+
 %define ASCII_NULL 0
 ; least significant half mask
 %define LSH_MASK 0x00000000FFFFFFFF
@@ -294,8 +299,45 @@ strPrint:
 
     add rsp, 8
     ret
-    
+
+
+; List
+; ====
+;                                   size    off     end
+; typedef struct s_list{
+;     struct s_listElem *first;     8       0       7
+;     struct s_listElem *last;      8       16      23
+; } list_t;                         24 (3B) -       -
+;
+;                                   size    off     end
+; typedef struct s_listElem{
+;     void *data;                   8       0       7
+;     struct s_listElem *next;      8       8       15
+;     struct s_listElem *prev;      8       16      23
+; } listElem_t;                     24 (3B) -       -
+
+%define LIST_OFFSET_FIRST 0
+%define LIST_OFFSET_LAST  8
+%define LIST_SIZE         3
+
+%define LIST_ELEM_OFFSET_DATA 0
+%define LIST_ELEM_OFFSET_NEXT 8
+%define LIST_ELEM_OFFSET_PREV 16
+%define LIST_ELEM_SIZE        3
+
 listNew:
+    ; list_t* listNew()
+    ;  Crea una nueva list_t vacı́a donde los punteros a first y last estén 
+    ;  inicializados en cero.
+
+    ; Creo una nueva lista
+    mov rdi, LIST_SIZE
+    call malloc         ; rax = l
+    
+    ; Inicializo first y last en 0
+    mov [rax + LIST_OFFSET_FIRST], NULL
+    mov [rax + LIST_OFFSET_LAST], NULL
+
     ret
 
 listAddFirst:
