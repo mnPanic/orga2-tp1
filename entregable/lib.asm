@@ -33,6 +33,10 @@ section .rodata:
     STR_FMT:  db "%s", 0
     STR_NULL: db "NULL", 0
 
+    CHAR_LEFT_BRACKET:  db '[', 0
+    CHAR_RIGHT_BRACKET: db ']', 0
+    CHAR_COMMA:         db ',', 0
+
 section .text
 strLen:
     ; uint32_t strLen(char* pString)
@@ -458,6 +462,65 @@ listDelete:
     ret
 
 listPrint:
+    ; void listPrint(list_t* pList, FILE *pFile, funcPrint_t* fp)
+    ;  Escribe en el stream indicado por pFile la lista almacenada en pList. 
+    ;  Para cada dato llama a la función fp, y si esta es cero, escribe el 
+    ;  puntero al dato con el formato "%p". 
+    ;  El formato de la lista será: 
+    ;    [x_0,...,x_{n−1}]
+    ;  Suponiendo que x_i es el resultado de escribir el i-ésimo elemento.
+
+    ; rdi = pList
+    ; rsi = pFile
+    ; rdx = fp
+
+    push r12
+    push r13
+    push r14
+    push r15
+    sub rsp, 8
+
+    mov r12, rdi                        ; r12 = pList
+    mov r13, rsi                        ; r13 = pFile
+    mov r14, rdx                        ; r14 = fp
+    mov r15, [rdi + LIST_OFFSET_FIRST]  ; r15 = actual
+
+    ; Imprimo '['
+    mov rdi, CHAR_LEFT_BRACKET
+    mov rsi, r13
+    call strPrint
+
+    ; Imprimo cada elemento
+    .loop:
+        cmp r15, NULL   ; while actual != NULL
+        je .endloop
+
+        ; Imprimo el elemento
+        mov rdi, [r15 + LIST_ELEM_OFFSET_DATA]
+        mov rsi, r13
+        call strPrint
+
+        mov r15, [r15 + LIST_ELEM_OFFSET_NEXT]
+        cmp r15, NULL ; Si no tiene siguiente, no imprimo ','
+        je .loop
+
+        ; Imprimo ','
+        mov rdi, CHAR_COMMA
+        mov rsi, r13
+        call strPrint
+        jmp .loop
+    .endloop:
+
+    ; Imprimo ']'
+    mov rdi, CHAR_RIGHT_BRACKET
+    mov rsi, r13
+    call strPrint
+
+    add rsp, 8
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret
 
 hashTableNew:
