@@ -20,3 +20,7 @@ strConcat(aa, ) = aa
 # strPrint
 hola hola
 NULL
+# strSubstring
+strSubstring('ABC', 1, 1) = B
+strSubstring('ABC', 10, 0) = ABC
+strSubstring('ABC', 2, 10) = C

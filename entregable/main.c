@@ -69,6 +69,15 @@ void test_string(FILE *pfile) {
     fprintf(pfile, "\n");
     // NULL
 
+    /* strSubstring */
+    fprintf(pfile, "# strSubstring\n");
+    fprintf(pfile, "strSubstring('ABC', 1, 1) = %s\n", strSubstring(strClone("ABC"), 1, 1));
+    // strSubstring("ABC", 1, 1) = "B",
+    fprintf(pfile, "strSubstring('ABC', 10, 0) = %s\n", strSubstring(strClone("ABC"), 10, 0));
+    // strSubstring("ABC", 10, 0) = "ABC",
+    fprintf(pfile, "strSubstring('ABC', 2, 10) = %s\n", strSubstring(strClone("ABC"), 2, 10));
+    // strSubstring("ABC", 2, 10) = "C"
+
 }
 
 int main (void){

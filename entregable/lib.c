@@ -32,8 +32,41 @@ int32_t c_strCmp(char* pStringA, char* pStringB) {
 /** STRING **/
 
 char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
+    // Genera un nuevo string tomando los caracteres desde el ı́ndice inicio
+    // hasta el ı́ndice fin inclusive, liberando la memoria ocupada por la string
+    // pasada por parámetro. 
+    // Considerando len como la cantidad de caracteres del string,
+    //  - Si inicio>fin, retorna el mismo string pasado por parámetro. 
+    //  - Si inicio>len, entonces retorna la string vacı́a. 
+    //  - Si fin>len, se tomará como lı́mite superior la longitud del string. 
+    //
+    // Ejemplos: 
+    //     strSubstring("ABC", 1, 1)  → "B",
+    //     strSubstring("ABC", 10, 0) → "ABC",
+    //     strSubstring("ABC", 2, 10) → "C"
 
-    return 0;
+    // Caso turbio: Si inicio > fin, retorno el mismo string
+    if (inicio > fin) {
+        return pString;
+    }
+
+    // Creo el nuevo string
+    int32_t len = strLen(pString);
+    char* s = malloc(fin-inicio+1);
+
+    // Debo tomar pString[i:f] ambos inclusive
+    int32_t i = inicio; // i = indice de pString
+    int32_t j = 0;      // j = indice de s
+    while(i <= fin && i < len) {
+        s[j] = pString[i];
+        i++;
+        j++;
+    }
+
+    // Libero la memoria del string anterior
+    free(pString);
+
+    return s;
 }
 
 /** Lista **/
