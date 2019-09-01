@@ -22,8 +22,6 @@ global hashTableAdd
 global hashTableDeleteSlot
 global hashTableDelete
 
-%define NULL, 0
-
 ; String
 ; ======
 
@@ -316,6 +314,9 @@ strPrint:
 ;     struct s_listElem *prev;      8       16      23
 ; } listElem_t;                     24 (3B) -       -
 
+%define NULL 0x0
+%define ptr qword
+
 %define LIST_OFFSET_FIRST 0
 %define LIST_OFFSET_LAST  8
 %define LIST_SIZE         3
@@ -330,18 +331,113 @@ listNew:
     ;  Crea una nueva list_t vacı́a donde los punteros a first y last estén 
     ;  inicializados en cero.
 
+    ; Armo stack frame para estar alineado
+    push rbp
+    mov rbp, rsp
+
     ; Creo una nueva lista
     mov rdi, LIST_SIZE
     call malloc         ; rax = l
     
     ; Inicializo first y last en 0
-    mov [rax + LIST_OFFSET_FIRST], NULL
-    mov [rax + LIST_OFFSET_LAST], NULL
+    mov ptr [rax + LIST_OFFSET_FIRST], NULL
+    mov ptr [rax + LIST_OFFSET_LAST], NULL
 
+    pop rbp
+    ret
+
+; Rutina auxiliar
+_listAddElem:
+    ; void _listAddElem(list_t* l, void* data, listElem_t* prev, listElem_t* next)
+    ;  Agrega un elemento a una lista, que tendrá
+    ;   - prev: Elemento previo
+    ;   - next: Elemento siguiente
+    ;   - data: Datos
+    ;  Si la lista no tiene primero, lo agrega como primero,
+    ;  y si no tiene último, como último.
+
+    ; rdi = l
+    ; rsi = data
+    ; rdx = prev
+    ; rcx = next
+
+    push r12
+    push r13
+    push r14
+    push r15
+    sub rsp, 8      ; Alineado
+
+    mov r12, rdi    ; r12 = l
+    mov r13, rsi    ; r13 = data
+    mov r14, rdx    ; r14 = prev
+    mov r15, rcx    ; r15 = next
+
+    ; Creo el nuevo nodo
+    mov rdi, LIST_ELEM_SIZE
+    call malloc                 ; rax = e
+
+    ; Seteo su info
+    mov [rax + LIST_ELEM_OFFSET_DATA], r13  ; e.data = data
+    mov [rax + LIST_ELEM_OFFSET_PREV], r14  ; e.prev = prev 
+    mov [rax + LIST_ELEM_OFFSET_NEXT], r15  ; e.next = next
+
+    ; Lo pongo como siguiente de su anterior
+    cmp r14, NULL
+    je .prev_null
+    mov [r14 + LIST_ELEM_OFFSET_NEXT], rax
+    .prev_null:
+
+    ; Lo pongo como anterior de su siguiente
+    cmp r15, NULL
+    je .next_null
+    mov [r15 + LIST_ELEM_OFFSET_PREV], rax
+    .next_null:
+
+    ; Lo seteo como primero si no había primero
+    cmp ptr [r12 + LIST_OFFSET_FIRST], NULL
+    jne .had_fst
+    mov [r12 + LIST_OFFSET_FIRST], rax
+    .had_fst:
+
+    ; Lo seteo como último si no había último
+    cmp ptr [r12 + LIST_OFFSET_LAST], NULL
+    jne .had_lst
+    mov [r12 + LIST_OFFSET_LAST], rax
+    .had_lst:
+
+    ; Reestablezco registros
+    add rsp, 8
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret
 
 listAddFirst:
+    ; void listAddFirst(list_t* pList, void* data)
+    ;  Agrega al principio de la lista un nuevo nodo que almacena data.
+
+    ; rdi = pList
+    ; rsi = data
+    
+    sub rsp, 8
+
+    ; Llamo a
+    ;  void _listAddElem(list_t* l, void* data, listElem_t* prev, listElem_t* next)
+    ; pList ya esta en rdi
+    ; data  ya esta en rsi
+    mov rdx, NULL                       ; prev = NULL
+    mov rcx, [rdi + LIST_OFFSET_FIRST]  ; next = pList -> first
+
+    ; Antes de llamar, seteo como NULL el primero de la lista así
+    ; el nuevo nodo es marcado como tal
+    mov ptr [rdi + LIST_OFFSET_FIRST], NULL
+
+    call _listAddElem
+  
+    add rsp, 8
     ret
+
 
 listAddLast:
     ret
