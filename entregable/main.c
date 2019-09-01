@@ -13,6 +13,8 @@ void test_hashTable(FILE *pfile){
 
 void test_string(FILE *pfile) {
     fprintf(pfile, "string\n");
+    fprintf(pfile, "======\n");
+
     char* prueba = "esto es una prueba";
     
     /* strLen */
@@ -80,12 +82,33 @@ void test_string(FILE *pfile) {
 
 }
 
+void test_list(FILE *pfile) {
+    fprintf(pfile, "\n");
+    fprintf(pfile, "list\n");
+    fprintf(pfile, "====\n");
+
+    /* listAdd */
+    fprintf(pfile, "# listAddFirst\n");
+    list_t* l = listNew();
+    listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // []
+
+    listAddFirst(l, strClone("pepe"));
+    listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [pepe]
+
+    listAddFirst(l, strClone("muy atento"));
+    listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [muy atento,pepe]
+}
+
 int main (void){
     FILE *pfile = fopen("salida.caso.propios.txt","w");
     test_hashTable(pfile);
 
     /* Tests custom */
     test_string(pfile);
+    test_list(pfile);
 
     fclose(pfile);
     return 0;

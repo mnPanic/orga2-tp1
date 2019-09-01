@@ -1,4 +1,5 @@
 string
+======
 # strLen
 len(esto es una prueba) = 18
 len() = 0
@@ -24,3 +25,10 @@ NULL
 strSubstring('ABC', 1, 1) = B
 strSubstring('ABC', 10, 0) = ABC
 strSubstring('ABC', 2, 10) = C
+
+list
+====
+# listAddFirst
+[]
+[pepe]
+[muy atento,pepe]
