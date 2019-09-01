@@ -87,7 +87,7 @@ void test_list(FILE *pfile) {
     fprintf(pfile, "list\n");
     fprintf(pfile, "====\n");
 
-    /* listAdd */
+    /* listAddFirst */
     fprintf(pfile, "# listAddFirst\n");
     list_t* l = listNew();
     listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
@@ -100,6 +100,20 @@ void test_list(FILE *pfile) {
     listAddFirst(l, strClone("muy atento"));
     listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [muy atento,pepe]
+
+    /* listAddLast */
+    fprintf(pfile, "# listAddLast\n");
+    list_t* l2 = listNew();
+    listPrint(l2, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // []
+
+    listAddLast(l2, strClone("pepe"));
+    listPrint(l2, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [pepe]
+
+    listAddLast(l2, strClone("muy atento"));
+    listPrint(l2, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [pepe,muy atento]
 }
 
 int main (void){

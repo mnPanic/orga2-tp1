@@ -424,7 +424,7 @@ listAddFirst:
     ; rdi = pList
     ; rsi = data
     
-    sub rsp, 8
+    sub rsp, 8 ; Alineado
 
     ; Llamo a
     ;  void _listAddElem(list_t* l, void* data, listElem_t* prev, listElem_t* next)
@@ -444,6 +444,27 @@ listAddFirst:
 
 
 listAddLast:
+    ; void listAddLast(list_t* pList, void* data)
+    ;  Agrega un nuevo nodo al final de la lista que almacena data.
+
+    ; rdi = pList
+    ; rsi = data
+
+    sub rsp, 8 ; Alineado
+    ; Llamo a
+    ;  void _listAddElem(list_t* l, void* data, listElem_t* prev, listElem_t* next)
+    ; pList ya esta en rdi
+    ; data  ya esta en rsi
+    mov rdx, [rdi + LIST_OFFSET_LAST]   ; prev = pList -> last
+    mov rcx, NULL                       ; next = NULL (pues es el último)
+
+    ; Antes de llamar, seteo como NULL el ultimo de la lista así
+    ; el nuevo nodo es marcado como tal
+    mov ptr [rdi + LIST_OFFSET_LAST], NULL
+
+    call _listAddElem
+
+    add rsp, 8
     ret
 
 listAdd:
