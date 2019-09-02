@@ -33,6 +33,8 @@ section .rodata:
     STR_FMT:  db "%s", 0
     STR_NULL: db "NULL", 0
 
+    DEFAULT_FMT: db "%p", 0
+
     CHAR_LEFT_BRACKET:  db '[', 0
     CHAR_RIGHT_BRACKET: db ']', 0
     CHAR_COMMA:         db ',', 0
@@ -535,6 +537,27 @@ listRemoveLast:
 listDelete:
     ret
 
+_defaultPrint:
+    ; void _defaultPrint(void* e, FILE *pFile);
+    ;  Escribe el puntero al dato con el formato "%p"
+    
+    ; rdi = e
+    ; rsi = pFile
+
+    sub rsp, 8 ; Alineado a 16
+
+    ; Quiero llamar a 
+    ;  int fprintf(FILE *stream, const char *format, ...);
+    mov r8, rdi ; r8 = e
+
+    mov rdi, rsi            ; stream = pfile
+    mov rsi, DEFAULT_FMT    ; format = "%p"
+    mov rdx, r8             ; ... = e
+    call fprintf
+
+    add rsp, 8
+    ret
+
 listPrint:
     ; void listPrint(list_t* pList, FILE *pFile, funcPrint_t* fp)
     ;  Escribe en el stream indicado por pFile la lista almacenada en pList. 
@@ -563,6 +586,11 @@ listPrint:
     mov rdi, CHAR_LEFT_BRACKET
     mov rsi, r13
     call strPrint
+
+    ; Si fp es cero, uso el print default
+    cmp r14, NULL
+    jne .loop
+    mov r14, _defaultPrint
 
     ; Imprimo cada elemento
     .loop:
