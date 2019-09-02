@@ -36,3 +36,9 @@ list
 []
 [pepe]
 [pepe,muy atento]
+# listAdd
+[]
+[b]
+[b,w]
+[b,j,w]
+[a,b,j,w]

@@ -458,6 +458,69 @@ listAddLast:
     ret
 
 listAdd:
+    ; void listAdd(list_t* pList, void* data, funcCmp_t* fc)
+    ;  Agrega un nuevo nodo que almacene data, respetando el orden dado por la 
+    ;  función fc.
+    ;  Supone que la lista viene ordenada crecientemente, debiéndose mantener 
+    ;  esta condición luego de la inserción de data.
+
+    ; rdi = pList
+    ; rsi = data
+    ; rdx = fc
+
+    push r12
+    push r13
+    push r14
+    push r15
+    push rbx
+
+    mov r12, rdi                        ; r12 = pList
+    mov r13, rsi                        ; r13 = data
+    mov r14, rdx                        ; r14 = fc
+    mov r15, [r12 + LIST_OFFSET_FIRST]  ; r15 = actual
+    mov rbx, NULL                       ; rbx = prev
+    
+    ; Recorro hasta que es menor al actual (o llego al final)
+    .loop:
+        ; Llegue al final?
+        cmp r15, NULL
+        je .endloop
+
+        ; Quiero llamar a
+        ;  int32_t (funcCmp_t)(void* a, void* b);
+        mov rdi, r13                            ; a = data
+        mov rsi, [r15 + LIST_ELEM_OFFSET_DATA]  ; b = actual->data 
+        call r14    ; rax = resultado de la comp
+        ; fc(a, b) retorna
+        ;   0 si son iguales
+        ;   1 si a < b
+        ;  −1 si b < a
+
+        ; Estoy en la posicion que cumple con el orden?
+        cmp rax, 1
+        je .endloop
+
+        ; Debo seguir mirando
+        mov rbx, r15
+        mov r15, [r15 + LIST_ELEM_OFFSET_NEXT]
+        jmp .loop
+    .endloop:
+
+    ; Estoy en una posición tal que
+    ;  fn(data, r15.data) = 1
+    ; Lo agrego acá llamando a 
+    ;  void _listAddElem(list_t* l, void* data, listElem_t* prev, listElem_t* next)
+    mov rdi, r12 ; l    = pList
+    mov rsi, r13 ; data = data
+    mov rdx, rbx ; prev = prev
+    mov rcx, r15 ; next = actual
+    call _listAddElem
+
+    pop rbx
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret
 
 listRemove:
