@@ -397,17 +397,17 @@ _listAddElem:
     mov [r15 + LIST_ELEM_OFFSET_PREV], rax
     .next_null:
 
-    ; Lo seteo como primero si no había primero
-    cmp ptr [r12 + LIST_OFFSET_FIRST], NULL
-    jne .had_fst
+    ; Si su siguiente era el primero de la lista, este es el nuevo primero
+    cmp ptr [r12 + LIST_OFFSET_FIRST], r15
+    jne .not_fst
     mov [r12 + LIST_OFFSET_FIRST], rax
-    .had_fst:
+    .not_fst:
 
-    ; Lo seteo como último si no había último
-    cmp ptr [r12 + LIST_OFFSET_LAST], NULL
-    jne .had_lst
+    ; Si su anterior era el ultimo de la lista, este es el nuevo ultimo
+    cmp ptr [r12 + LIST_OFFSET_LAST], r14
+    jne .not_lst
     mov [r12 + LIST_OFFSET_LAST], rax
-    .had_lst:
+    .not_lst:
 
     ; Reestablezco registros
     add rsp, 8
@@ -432,11 +432,6 @@ listAddFirst:
     ; data  ya esta en rsi
     mov rdx, NULL                       ; prev = NULL
     mov rcx, [rdi + LIST_OFFSET_FIRST]  ; next = pList -> first
-
-    ; Antes de llamar, seteo como NULL el primero de la lista así
-    ; el nuevo nodo es marcado como tal
-    mov ptr [rdi + LIST_OFFSET_FIRST], NULL
-
     call _listAddElem
   
     add rsp, 8
@@ -457,11 +452,6 @@ listAddLast:
     ; data  ya esta en rsi
     mov rdx, [rdi + LIST_OFFSET_LAST]   ; prev = pList -> last
     mov rcx, NULL                       ; next = NULL (pues es el último)
-
-    ; Antes de llamar, seteo como NULL el ultimo de la lista así
-    ; el nuevo nodo es marcado como tal
-    mov ptr [rdi + LIST_OFFSET_LAST], NULL
-
     call _listAddElem
 
     add rsp, 8
