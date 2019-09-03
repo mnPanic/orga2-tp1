@@ -188,6 +188,19 @@ void test_list(FILE *pfile) {
     listRemove(l6, "a", (funcCmp_t*)&strCmp, (funcDelete_t*)&strDelete);
     listPrint(l6, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [b,d,d,e]
+
+    /* listDelete */
+    fprintf(pfile, "# listDelete\n");
+    list_t* l7 = listNew();
+    for(int i = 0; i < 20; i++){
+        listAddFirst(l7, strClone("a"));
+    }
+    listPrint(l7, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a]
+    listDelete(l7, (funcDelete_t*)&strDelete);
+    listPrint(l7, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // []
+    
 }
 
 int main (void){

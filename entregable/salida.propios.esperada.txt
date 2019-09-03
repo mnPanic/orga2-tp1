@@ -55,3 +55,6 @@ list
 # listRemove
 [a,b,a,a,d,d,a,a,e,a]
 [b,d,d,e]
+# listDelete
+[a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a]
+[]
