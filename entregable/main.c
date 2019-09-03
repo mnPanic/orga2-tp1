@@ -151,6 +151,23 @@ void test_list(FILE *pfile) {
     listPrint(l4, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // []
 
+    /* listRemoveLast */
+    fprintf(pfile, "# listRemoveLast\n");
+    list_t* l5 = listNew();
+    listAddFirst(l5, strClone("tercero"));
+    listAddFirst(l5, strClone("segundo"));
+    listAddFirst(l5, strClone("primero"));
+    listPrint(l5, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [primero,segundo,tercero]
+    listRemoveLast(l5, (funcDelete_t*)&strDelete);
+    listPrint(l5, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [primero,segundo]
+    listRemoveLast(l5, (funcDelete_t*)&strDelete);
+    listPrint(l5, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [primero]
+    listRemoveLast(l5, (funcDelete_t*)&strDelete);
+    listPrint(l5, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // []
 }
 
 int main (void){

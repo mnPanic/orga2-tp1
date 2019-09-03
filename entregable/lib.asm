@@ -607,6 +607,21 @@ listRemoveFirst:
     ret
 
 listRemoveLast:
+    ; void listRemoveLast(list_t* pList, funcDelete_t* fd)
+    ;  Borra el último nodo de la lista. Si fd no es cero, utiliza la función 
+    ;  para borrar el dato correspondiente.
+
+    ; rdi = pList
+    ; rsi = fd
+
+    sub rsp, 8 ; Alineado a 16
+
+    ; Llamo a
+    ;  void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+    mov rdx, [rdi + LIST_OFFSET_LAST]  ; e = list.last
+    call _listRemoveElem
+
+    add rsp, 8
     ret
 
 listDelete:

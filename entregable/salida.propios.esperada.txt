@@ -47,3 +47,8 @@ list
 [segundo,tercero]
 [tercero]
 []
+# listRemoveLast
+[primero,segundo,tercero]
+[primero,segundo]
+[primero]
+[]
