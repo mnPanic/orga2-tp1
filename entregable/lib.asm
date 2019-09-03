@@ -786,7 +786,7 @@ listPrint:
         ; Imprimo el elemento
         mov rdi, [r15 + LIST_ELEM_OFFSET_DATA]
         mov rsi, r13
-        call strPrint
+        call r14
 
         mov r15, [r15 + LIST_ELEM_OFFSET_NEXT]
         cmp r15, NULL ; Si no tiene siguiente, no imprimo ','
