@@ -269,7 +269,6 @@ strDelete:
     call free
 
     add rsp, 8
-    pop rbp
     ret
  
 strPrint:
