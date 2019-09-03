@@ -82,11 +82,14 @@ strClone:
     mov rdi, rax
     call malloc     ; rax = ptr a nuevo string
 
-    ; Copio el contenido de pString a el nuevo string llamando a _strCopy
+    ; Copio el contenido de pString a el nuevo string llamando a
+    ;  int32_t _strCopy(char* dst, char* src, int offset_dst)
+
+    mov r13, rax    ; preservo el puntero al nuevo string
+
     mov rdi, rax    ; dst   = ptr a nuevo string
     mov rsi, r12    ; src   = pString
     xor rdx, rdx    ; offset = 0    
-    mov r13, rax    ; preservo rax
     call _strCopy
 
     mov rax, r13    ; Retorno la dirección del nuevo string
@@ -115,20 +118,20 @@ _strCopy:
     xor rax, rax
 
     .loop:
-        cmp byte [rsi + rax], ASCII_NULL   ; Si estoy leyendo el caracter nulo,
-        je .end                            ; termine.
-
         ; Copio el caracter actual de src a dst usando un 
         ; registro intermedio de 8 bits
         mov r8b, [rsi + rax]
         mov [rdi + rdx], r8b
+
+        cmp byte [rsi + rax], ASCII_NULL   ; Si estoy leyendo el caracter nulo,
+        je .end                            ; termine.
 
         inc rdx ; offset_dst++
         inc rax ; offset_src++
         jmp .loop
 
     .end:
-        ret
+    ret
 
 strCmp:
     ; int32_t strCmp(char* pStringA, char* pStringB)
