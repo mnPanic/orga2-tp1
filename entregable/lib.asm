@@ -587,6 +587,63 @@ _listRemoveElem:
 
 
 listRemove:
+    ; void listRemove(list_t* pList, void* data, funcCmp_t* fc, funcDelete_t* fd)
+    ;  Borra todos los nodos de la lista cuyo dato sea igual al contenido de 
+    ;  data según la función de comparación apuntada por fc. 
+    ;  Si fd no es cero, utiliza la función para borrar los datos en cuestión.
+
+    ; rdi = pList
+    ; rsi = data
+    ; rdx = fc
+    ; rcx = fd
+
+    push r12
+    push r13
+    push r14
+    push r15
+    push rbx ; Alineado a 16
+
+    mov r12, rdi ; r12 = pList
+    mov r13, rsi ; r13 = data
+    mov r14, rdx ; r14 = fc
+    mov r15, rcx ; r15 = fd
+
+    mov rbx, [r12 + LIST_OFFSET_FIRST] ; rbx = list->first (actual)
+    ; Recorro los nodos de la lista
+    .loop:
+        cmp rbx, NULL
+        je .endloop
+
+        ; Los datos son iguales?
+        ; Llamo a fc
+        ;  int32_t (funcCmp_t)(void*, void*);
+        mov rdi, r13                            ; rdi = data
+        mov rsi, [rbx + LIST_ELEM_OFFSET_DATA]  ; rsi = actual -> data
+        call r14    ; rax = resultado cmp
+
+        ; Si son iguales, el resultado es 0
+        cmp rax, 0
+        jne .continue
+        ; Son iguales, lo borro llamando a
+        ;   void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+        mov rdi, r12    ; rdi = pList
+        mov rsi, r15    ; rsi = fd
+        mov rdx, rbx    ; rdx = actual
+        call _listRemoveElem
+
+        .continue:
+            ; Avanzo el puntero
+            mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT]
+            jmp .loop
+
+    .endloop:
+
+    ; Reestablezco
+    pop rbx
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret
 
 listRemoveFirst:
