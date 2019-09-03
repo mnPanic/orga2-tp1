@@ -17,6 +17,7 @@ global listRemoveFirst
 global listRemoveLast
 global listDelete
 global listPrint
+global _listDefaultPrint
 global hashTableNew
 global hashTableAdd
 global hashTableDeleteSlot
@@ -723,8 +724,8 @@ listDelete:
     pop r12
     ret
 
-_defaultPrint:
-    ; void _defaultPrint(void* e, FILE *pFile);
+_listDefaultPrint:
+    ; void _listDefaultPrint(void* e, FILE *pFile);
     ;  Escribe el puntero al dato con el formato "%p"
     
     ; rdi = e
@@ -776,7 +777,7 @@ listPrint:
     ; Si fp es cero, uso el print default
     cmp r14, NULL
     jne .loop
-    mov r14, _defaultPrint
+    mov r14, _listDefaultPrint
 
     ; Imprimo cada elemento
     .loop:
