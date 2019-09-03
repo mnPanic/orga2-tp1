@@ -42,3 +42,8 @@ list
 [b,w]
 [b,j,w]
 [a,b,j,w]
+# listRemoveFirst
+[primero,segundo,tercero]
+[segundo,tercero]
+[tercero]
+[]

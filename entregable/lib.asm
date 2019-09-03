@@ -524,10 +524,86 @@ listAdd:
     pop r12
     ret
 
+_listRemoveElem:
+    ; void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+    ;  Remueve el elemento elem de la lista l.
+    ;  Si fd no es cero, la utiliza para borrar su dato.
+    
+    ; rdi = l
+    ; rsi = fd
+    ; rdx = e
+
+    push r12
+    mov r12, rdx    ; r12 = e
+
+    ; Muevo los punteros de su anterior y siguiente
+
+    cmp rdx, [rdi + LIST_OFFSET_FIRST]      ; if e = l->first
+    jne .not_fst
+    ; Era el primero, el nuevo primero es su siguiente
+    mov r8, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
+    mov [rdi + LIST_OFFSET_FIRST], r8       ; l->first = e->next
+    jmp .fst_end
+    .not_fst:
+        ; Como no era el primero, tiene prev
+        ; (e->prev)->next = e->next
+        mov r8, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
+        mov r9, [rdx + LIST_ELEM_OFFSET_PREV]   ; r9 = e->prev
+        mov [r9 + LIST_ELEM_OFFSET_NEXT], r8    ; (e->prev)->next = e->next
+    .fst_end:
+
+    cmp rdx, [rdi + LIST_OFFSET_LAST]       ; if e = l->last
+    jne .not_lst
+    ; Era el ultimo, el nuevo ultimo es su anterior
+    mov r8, [rdx + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
+    mov [rdi + LIST_OFFSET_LAST], r8        ; l->last = e->prev
+    jmp .lst_end
+    .not_lst:
+        ; Como no era el ultimo, tiene siguientestr
+        ; (e->next)->prev = e->prev
+        mov r8, [rdx + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
+        mov r9, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r9 = e->next
+        mov [r9 + LIST_ELEM_OFFSET_PREV], r8    ; (e->next)->prev = e->prev
+    .lst_end:
+
+    ; Veo de remover el dato
+    cmp rsi, NULL   ; if fd != NULL
+    je .null_fd
+    ; Remuevo el dato llamando a
+    ;  void (funcDelete_t)(void* ptr);
+    mov rdi, [r12 + LIST_ELEM_OFFSET_DATA]      ; ptr = e->data
+    call rsi                                    ; call fd
+    .null_fd:
+
+    ; Hago free del nodo
+    mov rdi, r12
+    call free
+
+    pop r12
+    ret
+
+
 listRemove:
     ret
 
 listRemoveFirst:
+    ; void listRemoveFirst(list_t* pList, funcDelete_t* fd)
+    ;  Borra el primer nodo de la lista. Si fd no es cero, utiliza la función 
+    ;  para borrar el dato correspondiente.
+
+    ; rdi = pList
+    ; rsi = fd
+
+    sub rsp, 8 ; Alineado a 16
+
+    ; Llamo a
+    ;  void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+    ; rdi = pList
+    ; rsi = fd
+    mov rdx, [rdi + LIST_OFFSET_FIRST]  ; e = list.first
+    call _listRemoveElem
+
+    add rsp, 8
     ret
 
 listRemoveLast:
