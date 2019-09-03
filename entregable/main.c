@@ -201,6 +201,17 @@ void test_list(FILE *pfile) {
     listPrint(l7, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // []
     
+    /* listPrintReverse */
+    fprintf(pfile, "# listPrintReverse\n");
+    char* strs[10] = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"};
+    list_t* l8 = listNew();
+    for(int i = 0; i < 10; i++) {
+        listAddLast(l8, strClone(strs[i]));
+    }
+    listPrint(l8, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [a,b,c,d,e,f,g,h,i,j]
+    listPrintReverse(l8, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [j,i,h,g,f,e,d,c,b,a]
 }
 
 int main (void){

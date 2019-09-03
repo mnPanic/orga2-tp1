@@ -300,7 +300,7 @@ strPrint:
     jne .continue
     mov r8, STR_NULL    ; Cambio el contenido por "NULL"
     .continue:
-        mov rdx, r8
+        mov rdx, r8     ; rdx = pString o NULL
         call fprintf
 
     add rsp, 8
@@ -633,7 +633,7 @@ listRemove:
 
         .continue:
             ; Avanzo el puntero
-            mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT]
+            mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT] ; actual = actual->next
             jmp .loop
 
     .endloop:
@@ -788,6 +788,7 @@ listPrint:
         mov rsi, r13
         call r14
 
+        ; Evito imprimir el separador para el último
         mov r15, [r15 + LIST_ELEM_OFFSET_NEXT]
         cmp r15, NULL ; Si no tiene siguiente, no imprimo ','
         je .loop

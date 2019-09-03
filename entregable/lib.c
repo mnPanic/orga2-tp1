@@ -71,8 +71,31 @@ char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
 
 /** Lista **/
 
-void listPrintReverse(list_t* pList, FILE *pFile, funcPrint_t* fp) {
+void _listDefaultPrint(void* e, FILE *pFile);
 
+void listPrintReverse(list_t* pList, FILE *pFile, funcPrint_t* fp) {
+    // Realiza la misma tarea que la función listPrint pero escribiendo los 
+    // elementos de la lista en orden inverso.
+
+    // Si fp es cero uso el print default
+    if (fp == NULL) {
+        fp = (funcPrint_t*)&_listDefaultPrint;
+    }
+
+    listElem_t* actual = pList->last;
+
+    strPrint("[", pFile);
+    while(actual != NULL) {
+        fp(actual->data, pFile);
+
+        if(actual->prev != NULL) {
+            strPrint(",", pFile);
+        }
+
+        actual = actual->prev;
+    }
+
+    strPrint("]", pFile);
 }
 
 /** HashTable **/
