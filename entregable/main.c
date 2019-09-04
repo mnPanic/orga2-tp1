@@ -59,13 +59,13 @@ void test_string(FILE *pfile) {
     /* strConcat */
     fprintf(pfile, "# strConcat\n");
     char * a = strClone("a"); // el free lo hace concat
-    fprintf(pfile, "strConcat(a, a) = %s\n", strConcat(a, a));
+    fprintfd(pfile, "strConcat(a, a) = %s\n", strConcat(a, a));
     // strConcat(a, a) = aa
-    fprintf(pfile, "strConcat(abas, hola espacio) = %s\n", strConcat(strClone("abas"), strClone("hola espacio")));
+    fprintfd(pfile, "strConcat(abas, hola espacio) = %s\n", strConcat(strClone("abas"), strClone("hola espacio")));
     // strConcat(abas, hola espacio) = abashola espacio
-    fprintf(pfile, "strConcat(aa, aa) = %s\n", strConcat(strClone("aa"), strClone("aa")));
+    fprintfd(pfile, "strConcat(aa, aa) = %s\n", strConcat(strClone("aa"), strClone("aa")));
     // strConcat(aa, aa) = aaaa
-    fprintf(pfile, "strConcat(aa, ) = %s\n", strConcat(strClone("aa"), strClone("")));
+    fprintfd(pfile, "strConcat(aa, ) = %s\n", strConcat(strClone("aa"), strClone("")));
     // strConcat(aa, ) = aa
 
     /* strPrint */
@@ -79,11 +79,11 @@ void test_string(FILE *pfile) {
 
     /* strSubstring */
     fprintf(pfile, "# strSubstring\n");
-    fprintf(pfile, "strSubstring('ABC', 1, 1) = %s\n", strSubstring(strClone("ABC"), 1, 1));
+    fprintfd(pfile, "strSubstring('ABC', 1, 1) = %s\n", strSubstring(strClone("ABC"), 1, 1));
     // strSubstring("ABC", 1, 1) = "B",
-    fprintf(pfile, "strSubstring('ABC', 10, 0) = %s\n", strSubstring(strClone("ABC"), 10, 0));
+    fprintfd(pfile, "strSubstring('ABC', 10, 0) = %s\n", strSubstring(strClone("ABC"), 10, 0));
     // strSubstring("ABC", 10, 0) = "ABC",
-    fprintf(pfile, "strSubstring('ABC', 2, 10) = %s\n", strSubstring(strClone("ABC"), 2, 10));
+    fprintfd(pfile, "strSubstring('ABC', 2, 10) = %s\n", strSubstring(strClone("ABC"), 2, 10));
     // strSubstring("ABC", 2, 10) = "C"
 
 }
@@ -107,6 +107,7 @@ void test_list(FILE *pfile) {
     listPrint(l, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [muy atento,pepe]
 
+    listDelete(l, (funcDelete_t*)&strDelete);
     /* listAddLast */
     fprintf(pfile, "# listAddLast\n");
     list_t* l2 = listNew();
@@ -121,6 +122,7 @@ void test_list(FILE *pfile) {
     listPrint(l2, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [pepe,muy atento]
 
+    listDelete(l2, (funcDelete_t*)&strDelete);
     /* listAdd */
     fprintf(pfile, "# listAdd\n");
     list_t* l3 = listNew();
@@ -138,7 +140,7 @@ void test_list(FILE *pfile) {
     listAdd(l3, strClone("a"), (funcCmp_t*)&strCmp);
     listPrint(l3, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [a,b,j,w]
-
+    listDelete(l3, (funcDelete_t*)&strDelete);
     /* listRemoveFirst */
     fprintf(pfile, "# listRemoveFirst\n");
     list_t* l4 = listNew();
@@ -156,6 +158,7 @@ void test_list(FILE *pfile) {
     listRemoveFirst(l4, (funcDelete_t*)&strDelete);
     listPrint(l4, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // []
+    listDelete(l4, (funcDelete_t*)&strDelete);
 
     /* listRemoveLast */
     fprintf(pfile, "# listRemoveLast\n");
@@ -174,7 +177,7 @@ void test_list(FILE *pfile) {
     listRemoveLast(l5, (funcDelete_t*)&strDelete);
     listPrint(l5, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // []
-
+    listDelete(l5, (funcDelete_t*)&strDelete);
     /* listRemove */
     fprintf(pfile, "# listRemove\n");
     list_t* l6 = listNew();
@@ -194,6 +197,7 @@ void test_list(FILE *pfile) {
     listRemove(l6, "a", (funcCmp_t*)&strCmp, (funcDelete_t*)&strDelete);
     listPrint(l6, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [b,d,d,e]
+    listDelete(l6, (funcDelete_t*)&strDelete);
 
     /* listDelete */
     fprintf(pfile, "# listDelete\n");
@@ -216,6 +220,8 @@ void test_list(FILE *pfile) {
     // [a,b,c,d,e,f,g,h,i,j]
     listPrintReverse(l8, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [j,i,h,g,f,e,d,c,b,a]
+
+    listDelete(l8, (funcDelete_t*)&strDelete);
 }
 
 int main (void){
