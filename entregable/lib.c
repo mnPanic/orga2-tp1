@@ -52,7 +52,7 @@ char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
 
     // Creo el nuevo string
     uint32_t len = strLen(pString);
-    char* s = malloc(fin-inicio+1);
+    char* s = malloc(fin-inicio+2);
 
     // Debo tomar pString[i:f] ambos inclusive
     uint32_t i = inicio; // i = indice de pString
@@ -62,6 +62,7 @@ char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
         i++;
         j++;
     }
+    s[j] = '\0';
 
     // Libero la memoria del string anterior
     free(pString);

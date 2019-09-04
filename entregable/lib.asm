@@ -221,6 +221,7 @@ strConcat:
     mov rdi, r13
     call strLen     ; rax = len(B)
     add r8, rax     ; r8  = len(A) + len(B)
+    inc r8          ; r8++ (para el null terminator)
 
     ; Reservo la memoria
     mov rdi, r8
@@ -242,7 +243,7 @@ strConcat:
 
     ; Libero la memoria de A y B (puede haber aliasing)
     cmp r12, r13    ; Si A y B apuntan a lo mismo,
-    jmp .b          ; solo borro uno
+    je .b           ; solo borro uno
     ; Borro A
     mov rdi, r12
     call free
