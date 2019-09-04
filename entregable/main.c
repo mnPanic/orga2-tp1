@@ -11,6 +11,12 @@ void test_hashTable(FILE *pfile){
     // TODO
 }
 
+// Llama a frpintf y borra el parámetro
+void fprintfd(FILE* pfile, char* fmt, char* param) {
+    fprintf(pfile, fmt, param);
+    strDelete(param);
+}
+
 void test_string(FILE *pfile) {
     fprintf(pfile, "string\n");
     fprintf(pfile, "======\n");
