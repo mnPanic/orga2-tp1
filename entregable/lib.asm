@@ -538,36 +538,42 @@ _listRemoveElem:
     ; rsi = fd
     ; rdx = e
 
+    ; Si el elemento a borrar es null, no hago nada
+    cmp rdx, NULL
+    jne .not_null
+    ret
+    .not_null:
+
     push r12
     mov r12, rdx    ; r12 = e
 
     ; Muevo los punteros de su anterior y siguiente
 
-    cmp rdx, [rdi + LIST_OFFSET_FIRST]      ; if e = l->first
+    cmp r12, [rdi + LIST_OFFSET_FIRST]      ; if e = l->first
     jne .not_fst
-    ; Era el primero, el nuevo primero es su siguiente
-    mov r8, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
+    ; Era el primero, el nuevo primero es su siguiente, de tenerlo
+    mov r8, [r12 + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
     mov [rdi + LIST_OFFSET_FIRST], r8       ; l->first = e->next
     jmp .fst_end
     .not_fst:
         ; Como no era el primero, tiene prev
         ; (e->prev)->next = e->next
-        mov r8, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
-        mov r9, [rdx + LIST_ELEM_OFFSET_PREV]   ; r9 = e->prev
+        mov r8, [r12 + LIST_ELEM_OFFSET_NEXT]   ; r8 = e->next
+        mov r9, [r12 + LIST_ELEM_OFFSET_PREV]   ; r9 = e->prev
         mov [r9 + LIST_ELEM_OFFSET_NEXT], r8    ; (e->prev)->next = e->next
     .fst_end:
 
-    cmp rdx, [rdi + LIST_OFFSET_LAST]       ; if e = l->last
+    cmp r12, [rdi + LIST_OFFSET_LAST]       ; if e = l->last
     jne .not_lst
-    ; Era el ultimo, el nuevo ultimo es su anterior
-    mov r8, [rdx + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
+    ; Era el ultimo, el nuevo ultimo es su anterior, de tenerlo
+    mov r8, [r12 + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
     mov [rdi + LIST_OFFSET_LAST], r8        ; l->last = e->prev
     jmp .lst_end
     .not_lst:
-        ; Como no era el ultimo, tiene siguientestr
+        ; Como no era el ultimo, tiene siguiente
         ; (e->next)->prev = e->prev
-        mov r8, [rdx + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
-        mov r9, [rdx + LIST_ELEM_OFFSET_NEXT]   ; r9 = e->next
+        mov r8, [r12 + LIST_ELEM_OFFSET_PREV]   ; r8 = e->prev
+        mov r9, [r12 + LIST_ELEM_OFFSET_NEXT]   ; r9 = e->next
         mov [r9 + LIST_ELEM_OFFSET_PREV], r8    ; (e->next)->prev = e->prev
     .lst_end:
 
