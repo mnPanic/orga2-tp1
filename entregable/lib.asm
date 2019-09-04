@@ -718,6 +718,10 @@ listDelete:
         jmp .loop
     .endloop:
 
+    ; Borro la lista
+    mov rdi, r12    ; rdi = pList
+    call free
+
     ; Reestablezco
     pop rbx
     pop r13
