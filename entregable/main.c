@@ -204,8 +204,6 @@ void test_list(FILE *pfile) {
     listPrint(l7, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
     // [a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a]
     listDelete(l7, (funcDelete_t*)&strDelete);
-    listPrint(l7, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
-    // []
     
     /* listPrintReverse */
     fprintf(pfile, "# listPrintReverse\n");
