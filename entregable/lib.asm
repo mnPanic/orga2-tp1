@@ -23,13 +23,6 @@ global hashTableAdd
 global hashTableDeleteSlot
 global hashTableDelete
 
-; String
-; ======
-
-%define ASCII_NULL 0
-; least significant half mask
-%define LSH_MASK 0x00000000FFFFFFFF
-
 section .rodata:
     STR_FMT:  db "%s", 0
     STR_NULL: db "NULL", 0
@@ -39,6 +32,14 @@ section .rodata:
     CHAR_LEFT_BRACKET:  db '[', 0
     CHAR_RIGHT_BRACKET: db ']', 0
     CHAR_COMMA:         db ',', 0
+
+;                                   String
+; ==============================================================================
+
+%define ASCII_NULL 0
+; least significant half mask
+%define LSH_MASK 0x00000000FFFFFFFF
+
 
 section .text
 strLen:
@@ -309,8 +310,9 @@ strPrint:
     ret
 
 
-; List
-; ====
+;                                    List
+; ==============================================================================
+;
 ;                                   size    off     end
 ; typedef struct s_list{
 ;     struct s_listElem *first;     8       0       7
