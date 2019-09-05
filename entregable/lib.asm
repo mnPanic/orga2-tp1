@@ -826,6 +826,21 @@ listPrint:
     pop r12
     ret
 
+;                                   Hash Table
+; ==============================================================================
+;
+;                                   size    off     end
+; typedef struct s_hashTable{
+;     struct s_list **listArray;    8       0       7
+;     uint32_t size;                4       8       12
+;     funcHash_t* funcHash;         8       16      24
+; } hashTable_t;                    24
+
+%define HASH_TABLE_SIZE             24
+%define HASH_TABLE_OFFSET_ARRAY     0
+%define HASH_TABLE_OFFSET_SIZE      8
+%define HASH_TABLE_OFFSET_FN_HASH   16
+%define HASH_TABLE_ARRAY_ELEM_SIZE  8
 hashTableNew:
     ret
 
