@@ -113,5 +113,20 @@ void hashTableRemoveAll(hashTable_t* pTable, void* data, funcCmp_t* fc, funcDele
 }
 
 void hashTablePrint(hashTable_t* pTable, FILE *pFile, funcPrint_t* fp) {
+    // Escribe en el stream indicado por pFile la tabla de listas almacenada 
+    // en t. Para cada dato llama a la función fp, y si es cero, escribe el 
+    // puntero al dato con el formato "%p". Cada elemento del arreglo contiene 
+    // una lista. 
+    // Éstas serán escritas en lı́neas distintas respetando el siguiente formato:
+    //
+    //   i = [x_0 ,...,x_n−1 ]
+    //
+    // donde x_i es el resultado de escribir el i-ésimo dato.
 
+    // Recorro la tabla printeando cada lista
+    for(uint32_t i = 0; i < pTable->size; i++){
+        fprintf(pFile, "%i = ", i);
+        listPrint((pTable->listArray)[i], pFile, fp);
+        fprintf(pFile, "\n");
+    }
 }
