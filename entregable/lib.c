@@ -72,7 +72,7 @@ char* strSubstring(char* pString, uint32_t inicio, uint32_t fin) {
 
 /** Lista **/
 
-void _listDefaultPrint(void* e, FILE *pFile);
+void _ptrPrint(void* e, FILE *pFile);
 
 void listPrintReverse(list_t* pList, FILE *pFile, funcPrint_t* fp) {
     // Realiza la misma tarea que la función listPrint pero escribiendo los 
@@ -80,7 +80,7 @@ void listPrintReverse(list_t* pList, FILE *pFile, funcPrint_t* fp) {
 
     // Si fp es cero uso el print default
     if (fp == NULL) {
-        fp = (funcPrint_t*)&_listDefaultPrint;
+        fp = (funcPrint_t*)&_ptrPrint;
     }
 
     listElem_t* actual = pList->last;
