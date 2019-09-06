@@ -901,6 +901,42 @@ hashTableNew:
     ret
 
 hashTableAdd:
+    ; void hashTableAdd(hashTable_t* pTable, void* data)
+    ;  Agrega un nuevo elemento que contenga data en el slot determinado por
+    ;  la función de hash. El elemento nuevo se agrega al final de la lista 
+    ;  que corresponde a dicho slot.
+    
+    ; rdi = pTable
+    ; rsi = data
+
+    push r12
+    push r13
+    sub rsp, 8
+
+    mov r12, rdi ; r12 = pTable
+    mov r13, rsi ; r13 = data
+
+    ; Llamo a la función de hash para tener el slot 
+    ;  int32_t funcHash_t(void *)
+    mov rdi, r13
+    mov rsi, [r12 + HASH_TABLE_OFFSET_FN_HASH]
+    call rsi    ; eax = hash result
+
+    ; Tengo que interpretarlo mod t->size
+    xor rdx, rdx
+    mov ebx, [r12 + HASH_TABLE_OFFSET_SIZE] ; ebx = size
+    div ebx ; edx = r (remainder)
+
+    ; Quiero agregar un nuevo elemento al final de la lista t->array[r]
+    ;   void listAddLast(list_t* pList, void* data)
+    mov rdi, [r12 + HASH_TABLE_OFFSET_ARRAY]            ; rdi = t->array
+    mov rdi, [rdi + rdx * HASH_TABLE_ARRAY_ELEM_SIZE]   ; rdi = t->array[r]
+    mov rsi, r13                                        ; rsi = data
+    call listAddLast
+
+    add rsp, 8
+    pop r13
+    pop r12
     ret
     
 hashTableDeleteSlot:

@@ -69,3 +69,7 @@ hash table
 2 = []
 3 = []
 4 = []
+# hashTableAdd
+0 = [pepe]
+1 = []
+2 = []

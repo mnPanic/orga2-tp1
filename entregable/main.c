@@ -241,6 +241,17 @@ void test_hash_table(FILE* pfile) {
     4 = []
     */
     // TODO: free
+
+    /* hashTableAdd */
+    fprintf(pfile, "# hashTableAdd\n");
+    hashTable_t* t2 = hashTableNew(3, (funcHash_t*)&strHash);
+    hashTableAdd(t2, strClone("pepe")); // 15 % 3 = 1
+    hashTablePrint(t2, pfile, (funcPrint_t*)&strPrint);
+    /*
+    0 = [pepe]
+    1 = []
+    2 = []
+    */
 }
 
 int main (void){
