@@ -224,6 +224,25 @@ void test_list(FILE *pfile) {
     listDelete(l8, (funcDelete_t*)&strDelete);
 }
 
+void test_hash_table(FILE* pfile) {
+    fprintf(pfile, "\n");
+    fprintf(pfile, "hash table\n");
+    fprintf(pfile, "==========\n");
+
+    /* hashTableNew */
+    fprintf(pfile, "# hashTableNew\n");
+    hashTable_t* t = hashTableNew(5, (funcHash_t*)&strHash);
+    hashTablePrint(t, pfile, (funcPrint_t*)&strPrint);
+    /*
+    0 = []
+    1 = []
+    2 = []
+    3 = []
+    4 = []
+    */
+    // TODO: free
+}
+
 int main (void){
     FILE *pfile = fopen("salida.caso.propios.txt","w");
     test_hashTable(pfile);
@@ -231,6 +250,7 @@ int main (void){
     /* Tests custom */
     test_string(pfile);
     test_list(pfile);
+    test_hash_table(pfile);
 
     fclose(pfile);
     return 0;

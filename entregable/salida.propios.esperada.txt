@@ -60,3 +60,12 @@ list
 # listPrintReverse
 [a,b,c,d,e,f,g,h,i,j]
 [j,i,h,g,f,e,d,c,b,a]
+
+hash table
+==========
+# hashTableNew
+0 = []
+1 = []
+2 = []
+3 = []
+4 = []
