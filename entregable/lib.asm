@@ -842,6 +842,62 @@ listPrint:
 %define HASH_TABLE_OFFSET_FN_HASH   16
 %define HASH_TABLE_ARRAY_ELEM_SIZE  8
 hashTableNew:
+    ; hashTable_t* hashTableNew(uint32_t size, funcHash_t* funcHash)
+    ;  Crea un nuevo hashTable_t con una función de hash funcHash y un arreglo
+    ;  de tamaño size completándolo con listas vacı́as.
+
+    ; rdi = size
+    ; rsi = funcHash
+
+    push r12
+    push r13
+    push r14
+    push r15
+    sub rsp, 8
+
+    ; Preservo los parámetros para no perderlos al llamar a malloc
+    mov r12, rdi    ; r12 = size
+    mov r13, rsi    ; r13 = funcHash
+
+    ; Creo el nuevo hashTable
+    mov rdi, HASH_TABLE_SIZE
+    call malloc     ; rax = nuevo hash table
+    mov r14, rax    ; r14 = nuevo hash table
+
+    ; Creo el arreglo de listas
+    ; size_arr = size * ptr_size
+    lea rdi, [r12 * HASH_TABLE_ARRAY_ELEM_SIZE]
+    call malloc     ; rax = nuevo arreglo de listas
+    mov r15, rax    ; r15 = nuevo arreglo de listas
+
+    ; Seteo los atributos de la tabla de hash
+    mov [r14 + HASH_TABLE_OFFSET_ARRAY],    r15  ; table->list = list
+    mov [r14 + HASH_TABLE_OFFSET_SIZE],     r12  ; table->size = size
+    mov [r14 + HASH_TABLE_OFFSET_FN_HASH],  r13  ; table->funcHash = funcHash
+
+    ; Inicializo las listas
+    .loop:
+        cmp r12, 0  ; if size < 0
+        jl .endloop ; break
+
+        ; Creo una nueva lista
+        call listNew    ; rax = l (ptr a nueva lista)
+        
+        ; Guardo su puntero en el índice actual
+        ; puntero al inicio + tamaño del dato * index
+        mov [r15 + 8 * r12], rax    ; list[size] = l
+
+        dec r12     ; size--
+        jmp .loop
+    .endloop:
+
+    mov rax, r14    ; return t
+
+    add rsp, 8
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret
 
 hashTableAdd:
