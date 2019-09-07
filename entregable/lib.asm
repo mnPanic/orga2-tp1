@@ -698,26 +698,22 @@ listDelete:
 
     push r12
     push r13
-    push rbx
+    sub rsp, 8
 
     mov r12, rdi ; r12 = pList
     mov r13, rsi ; r13 = fd
 
-    mov rbx, [r12 + LIST_OFFSET_FIRST] ; rbx = list->first (actual)
-    ; Recorro los nodos de la lista
+    ; Hago listRemoveFirst hasta que no haya nodos
     .loop:
-        cmp rbx, NULL
+        cmp qword [r12 + LIST_OFFSET_FIRST], NULL
         je .endloop
 
-        ; Lo borro llamando a
-        ;   void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+        ; Llamo a 
+        ;   void listRemoveFirst(list_t* l, funcDelete_t* fd)
         mov rdi, r12    ; rdi = pList
         mov rsi, r13    ; rsi = fd
-        mov rdx, rbx    ; rdx = actual
-        call _listRemoveElem
+        call listRemoveFirst
 
-        ; Avanzo el puntero
-        mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT]
         jmp .loop
     .endloop:
 
@@ -726,7 +722,7 @@ listDelete:
     call free
 
     ; Reestablezco
-    pop rbx
+    add rsp, 8
     pop r13
     pop r12
     ret
