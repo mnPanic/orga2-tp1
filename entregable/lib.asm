@@ -599,7 +599,6 @@ _listRemoveElem:
     pop r12
     ret
 
-
 listRemove:
     ; void listRemove(list_t* pList, void* data, funcCmp_t* fc, funcDelete_t* fd)
     ;  Borra todos los nodos de la lista cuyo dato sea igual al contenido de 
@@ -1044,6 +1043,10 @@ hashTableDelete:
         dec r15         ; i--
         jmp .loop
     .endloop:
+
+    ; Borro el arreglo de slots
+    mov rdi, r14    ; rdi = table->slots
+    call free
 
     ; Borro la tabla
     mov rdi, r12
