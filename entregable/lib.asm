@@ -79,17 +79,17 @@ strClone:
 
     mov r12, rdi    ; r12 = pString
     
-    ; Pido cantidad de memoria igual a la longitud del string
+    ; Pido cantidad de memoria igual a la longitud del string + 1
+    ; (uno más para el caracter de terminación)
     ; pString ya está en rdi
     call strLen     ; rax = len(pString)
+    inc rax         ; rax++
     mov rdi, rax
     call malloc     ; rax = ptr a nuevo string
+    mov r13, rax    ; preservo el puntero al nuevo string
 
     ; Copio el contenido de pString a el nuevo string llamando a
     ;  int32_t _strCopy(char* dst, char* src, int offset_dst)
-
-    mov r13, rax    ; preservo el puntero al nuevo string
-
     mov rdi, rax    ; dst   = ptr a nuevo string
     mov rsi, r12    ; src   = pString
     xor rdx, rdx    ; offset = 0    
