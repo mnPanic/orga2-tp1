@@ -1008,4 +1008,46 @@ hashTableDeleteSlot:
     ret
 
 hashTableDelete:
+    ; void hashTableDelete(hashTable_t* pTable, funcDelete_t* fd)
+    ;  Borra todas las estructuras apuntadas desde hashTable_t. 
+    ;  Si fd no es cero, utiliza la función para borrar sus datos.
+
+    ; rdi = pTable
+    ; rsi = fd
+    push r12
+    push r13
+    push r14
+    push r15
+    sub rsp, 8
+
+    mov r12, rdi    ; r12 = pTable
+    mov r13, rsi    ; r13 = fd
+    mov r14, [r12 + HASH_TABLE_OFFSET_ARRAY]    ; r14 = table->slots
+    mov r15, [r12 + HASH_TABLE_OFFSET_SIZE]     ; r15 = i (indice de lista)
+    dec r15
+
+    ; Recorro todos los slots y llamo a listDelete
+    .loop:
+        cmp r15, 0      ; while i >= 0
+        jl .endloop
+
+        ; Borro la lista llamando a
+        ;   void listDelete(list_t* pList, funcDelete_t* fd)
+        mov rdi, [r14 + r15 * HASH_TABLE_ARRAY_ELEM_SIZE] ; rdi = table->slots[i]
+        mov rsi, r13    ; rsi = fd
+        call listDelete
+
+        dec r15         ; i--
+        jmp .loop
+    .endloop:
+
+    ; Borro la tabla
+    mov rdi, r12
+    call free
+
+    add rsp, 8
+    pop r15
+    pop r14
+    pop r13
+    pop r12
     ret

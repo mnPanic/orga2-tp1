@@ -251,7 +251,7 @@ void test_hash_table(FILE* pfile) {
     3 = []
     4 = []
     */
-    // TODO: free
+    hashTableDelete(t, (funcDelete_t*)&strDelete);
 
     /* hashTableAdd */
     fprintf(pfile, "# hashTableAdd\n");
@@ -263,7 +263,7 @@ void test_hash_table(FILE* pfile) {
     1 = []
     2 = []
     */
-    // TODO: free
+    hashTableDelete(t2, (funcDelete_t*)&strDelete);
 
     /* hashTableDeleteSlot */
     fprintf(pfile, "# hashTableDeleteSlot\n");
@@ -290,6 +290,7 @@ void test_hash_table(FILE* pfile) {
     1 = []
     2 = []
     */
+    hashTableDelete(t3, (funcDelete_t*)&strDelete);
 }
 
 int main (void){
