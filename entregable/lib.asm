@@ -737,6 +737,50 @@ listDelete:
     pop r12
     ret
 
+_listClear:
+    ; void _listClear(list_t* pList, funcDelete_t* fd)
+    ;  Borra todos los nodos de la lista, pero no borra la lista en sí.
+    ;  Si fd no es cero, la utiliza para borrar sus datos correspondientes.
+    
+    ; rdi = pList
+    ; rsi = fd
+
+    push r12
+    push r13
+    push rbx
+
+    mov r12, rdi ; r12 = pList
+    mov r13, rsi ; r13 = fd
+
+    mov rbx, [r12 + LIST_OFFSET_FIRST] ; rbx = list->first (actual)
+    ; Recorro los nodos de la lista
+    .loop:
+        cmp rbx, NULL
+        je .endloop
+
+        ; Lo borro llamando a
+        ;   void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+        mov rdi, r12    ; rdi = pList
+        mov rsi, r13    ; rsi = fd
+        mov rdx, rbx    ; rdx = actual
+        call _listRemoveElem
+
+        ; Avanzo el puntero
+        mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT]
+        jmp .loop
+    .endloop:
+
+    ; Seteo los punteros de la lista
+    mov ptr [r12 + LIST_OFFSET_FIRST], NULL     ; list->first = null
+    mov ptr [r12 + LIST_OFFSET_LAST], NULL      ; list->last = null
+
+    ; Reestablezco
+    pop rbx
+    pop r13
+    pop r12
+    ret
+
+
 _ptrPrint:
     ; void _ptrPrint(void* e, FILE *pFile);
     ;  Escribe el puntero al dato con el formato "%p"
@@ -940,6 +984,27 @@ hashTableAdd:
     ret
     
 hashTableDeleteSlot:
+    ; void hashTableDeleteSlot(hashTable_t* pTable, uint32_t slot, funcDelete_t* fd)
+    ;  Borra todos los elementos del slot indicado. Si el valor de fd no es 
+    ;  cero, utiliza la función para borrar los datos dados.
+    
+    ; rdi = pTable
+    ; esi = slot
+    ; rdx = fd
+
+    sub rsp, 8
+
+    ; Limpio la parte alta de rsi
+    and rsi, LSH_MASK
+
+    ; Hago clear de la lista que se encuentra en ese slot
+    ;   void _listClear(list_t* pList, funcDelete_t* fd)
+    mov rdi, [rdi + HASH_TABLE_OFFSET_ARRAY]           ; rdi = table->slots
+    mov rdi, [rdi + rsi * HASH_TABLE_ARRAY_ELEM_SIZE]  ; rdi = table->slots[slot]
+    mov rsi, rdx    ; rsi = fd
+    call _listClear
+
+    add rsp, 8
     ret
 
 hashTableDelete:

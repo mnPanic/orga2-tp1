@@ -229,6 +229,17 @@ void test_hash_table(FILE* pfile) {
     fprintf(pfile, "hash table\n");
     fprintf(pfile, "==========\n");
 
+    char* ss[8] = {
+        "abeja",    // 'a' = 97     s = 0       % 3 = 0
+        "pepe",     // 'p' = 112    s = 15      % 3 = 0
+        "beba",     // 'b' = 98     s = 1       % 3 = 1
+        "moby",     // 'm' = 109    s = 12      % 3 = 0
+        "flor",     // 'f' = 102    s = 5       % 3 = 2
+        "verde",    // 'v' = 118    s = 21      % 3 = 0
+        "hoja",     // 'h' = 104    s = 7       % 3 = 1
+        "rojo",     // 'r' = 114    s = 17      % 3 = 2
+    };
+
     /* hashTableNew */
     fprintf(pfile, "# hashTableNew\n");
     hashTable_t* t = hashTableNew(5, (funcHash_t*)&strHash);
@@ -245,10 +256,37 @@ void test_hash_table(FILE* pfile) {
     /* hashTableAdd */
     fprintf(pfile, "# hashTableAdd\n");
     hashTable_t* t2 = hashTableNew(3, (funcHash_t*)&strHash);
-    hashTableAdd(t2, strClone("pepe")); // 15 % 3 = 1
+    hashTableAdd(t2, strClone(ss[1]));
     hashTablePrint(t2, pfile, (funcPrint_t*)&strPrint);
     /*
     0 = [pepe]
+    1 = []
+    2 = []
+    */
+    // TODO: free
+
+    /* hashTableDeleteSlot */
+    fprintf(pfile, "# hashTableDeleteSlot\n");
+    hashTable_t* t3 = hashTableNew(3, (funcHash_t*)&strHash);
+    for(int i = 0; i < 8; i++) {
+        hashTableAdd(t3, strClone(ss[i]));
+    }
+    hashTablePrint(t3, pfile, (funcPrint_t*)&strPrint);
+    for (int i = 0; i < 3; i++) {
+        hashTableDeleteSlot(t3, i, (funcDelete_t*)&strDelete);
+        hashTablePrint(t3, pfile, (funcPrint_t*)&strPrint);
+    }
+    /*
+    0 = [abeja,pepe,moby,verde]
+    1 = [beba,hoja]
+    2 = [flor,rojo]
+    0 = []
+    1 = [beba,hoja]
+    2 = [flor,rojo]
+    0 = []
+    1 = []
+    2 = [flor,rojo]
+    0 = []
     1 = []
     2 = []
     */
