@@ -218,16 +218,16 @@ strConcat:
 
     ; Obtengo el largo del nuevo string (C)
     ; pStringA ya está en rdi
-    call strLen     ; rax = len(A)
-    mov r8, rax     ; r8  = len(A)
+    call strLen      ; rax = len(A)
+    mov r14, rax     ; r14 = len(A)
 
     mov rdi, r13
     call strLen     ; rax = len(B)
-    add r8, rax     ; r8  = len(A) + len(B)
-    inc r8          ; r8++ (para el null terminator)
+    add r14, rax    ; r14 = len(A) + len(B)
+    inc r14         ; r14++ (para el null terminator)
 
     ; Reservo la memoria
-    mov rdi, r8
+    mov rdi, r14
     call malloc     ; rax = pStringC
     mov r14, rax    ; r14 = pStringC
 
