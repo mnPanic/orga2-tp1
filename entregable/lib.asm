@@ -526,8 +526,8 @@ listAdd:
     ret
 
 _listRemoveElem:
-    ; void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
-    ;  Remueve el elemento elem de la lista l.
+    ; listElem_t* _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
+    ;  Remueve el elemento elem de la lista l. Devuelve un puntero al siguiente
     ;  Si fd no es cero, la utiliza para borrar su dato.
     
     ; rdi = l
@@ -541,6 +541,8 @@ _listRemoveElem:
     .not_null:
 
     push r12
+    push r13
+    sub rsp, 8
     mov r12, rdx    ; r12 = e
 
     ; Muevo los punteros de su anterior y siguiente
@@ -582,10 +584,18 @@ _listRemoveElem:
     call rsi                                    ; call fd
     .null_fd:
 
+    ; Preservo el siguiente para poder devolverlo
+    mov r13, [r12 + LIST_ELEM_OFFSET_NEXT]
+
     ; Hago free del nodo
     mov rdi, r12
     call free
 
+    ; Retorno el siguiente al nodo que eliminé
+    mov rax, r13
+
+    add rsp, 8
+    pop r13
     pop r12
     ret
 
@@ -627,15 +637,18 @@ listRemove:
 
         ; Si son iguales, el resultado es 0
         cmp rax, 0
-        jne .continue
+        jne .not_eq
+
         ; Son iguales, lo borro llamando a
         ;   void _listRemoveElem(list_t* l, funcDelete_t* fd, listElem_t* e)
         mov rdi, r12    ; rdi = pList
         mov rsi, r15    ; rsi = fd
         mov rdx, rbx    ; rdx = actual
-        call _listRemoveElem
+        call _listRemoveElem    ; rax = siguiente al nodo eliminado
+        mov rbx, rax    ; actual = next
+        jmp .loop
 
-        .continue:
+        .not_eq:
             ; Avanzo el puntero
             mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT] ; actual = actual->next
             jmp .loop
@@ -753,10 +766,10 @@ _listClear:
         mov rdi, r12    ; rdi = pList
         mov rsi, r13    ; rsi = fd
         mov rdx, rbx    ; rdx = actual
-        call _listRemoveElem
+        call _listRemoveElem    ; rax = siguiente al eliminado
 
         ; Avanzo el puntero
-        mov rbx, [rbx + LIST_ELEM_OFFSET_NEXT]
+        mov rbx, rax
         jmp .loop
     .endloop:
 
