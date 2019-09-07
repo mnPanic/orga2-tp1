@@ -239,23 +239,8 @@ void test_list(FILE *pfile) {
     listDelete(l9, (funcDelete_t*)&strDelete);
 }
 
-void test_hash_table(FILE* pfile) {
-    fprintf(pfile, "\n");
-    fprintf(pfile, "hash table\n");
-    fprintf(pfile, "==========\n");
-
-    char* ss[8] = {
-        "abeja",    // 'a' = 97     s = 0       % 3 = 0
-        "pepe",     // 'p' = 112    s = 15      % 3 = 0
-        "beba",     // 'b' = 98     s = 1       % 3 = 1
-        "moby",     // 'm' = 109    s = 12      % 3 = 0
-        "flor",     // 'f' = 102    s = 5       % 3 = 2
-        "verde",    // 'v' = 118    s = 21      % 3 = 0
-        "hoja",     // 'h' = 104    s = 7       % 3 = 1
-        "rojo",     // 'r' = 114    s = 17      % 3 = 2
-    };
-
-    /* hashTableNew */
+void test_hashTableNew(FILE* pfile) {
+        /* hashTableNew */
     fprintf(pfile, "# hashTableNew\n");
     hashTable_t* t = hashTableNew(5, (funcHash_t*)&strHash);
     hashTablePrint(t, pfile, (funcPrint_t*)&strPrint);
@@ -267,11 +252,13 @@ void test_hash_table(FILE* pfile) {
     4 = []
     */
     hashTableDelete(t, (funcDelete_t*)&strDelete);
+}
 
+void test_hashTableAdd(FILE* pfile) {
     /* hashTableAdd */
     fprintf(pfile, "# hashTableAdd\n");
     hashTable_t* t2 = hashTableNew(3, (funcHash_t*)&strHash);
-    hashTableAdd(t2, strClone(ss[1]));
+    hashTableAdd(t2, strClone("pepe"));
     hashTablePrint(t2, pfile, (funcPrint_t*)&strPrint);
     /*
     0 = [pepe]
@@ -279,6 +266,19 @@ void test_hash_table(FILE* pfile) {
     2 = []
     */
     hashTableDelete(t2, (funcDelete_t*)&strDelete);
+}
+
+void test_hashTableDeleteSlot(FILE* pfile) {
+    char* ss[8] = {
+        "abeja",    // 'a' = 97     s = 0       % 3 = 0
+        "pepe",     // 'p' = 112    s = 15      % 3 = 0
+        "beba",     // 'b' = 98     s = 1       % 3 = 1
+        "moby",     // 'm' = 109    s = 12      % 3 = 0
+        "flor",     // 'f' = 102    s = 5       % 3 = 2
+        "verde",    // 'v' = 118    s = 21      % 3 = 0
+        "hoja",     // 'h' = 104    s = 7       % 3 = 1
+        "rojo",     // 'r' = 114    s = 17      % 3 = 2
+    };
 
     /* hashTableDeleteSlot */
     fprintf(pfile, "# hashTableDeleteSlot\n");
@@ -306,6 +306,15 @@ void test_hash_table(FILE* pfile) {
     2 = []
     */
     hashTableDelete(t3, (funcDelete_t*)&strDelete);
+}
+void test_hash_table(FILE* pfile) {
+    fprintf(pfile, "\n");
+    fprintf(pfile, "hash table\n");
+    fprintf(pfile, "==========\n");
+
+    test_hashTableNew(pfile);
+    test_hashTableAdd(pfile);
+    test_hashTableDeleteSlot(pfile);
 }
 
 int main (void){
