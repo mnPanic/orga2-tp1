@@ -17,6 +17,8 @@ void fprintfd(FILE* pfile, char* fmt, char* param) {
     strDelete(param);
 }
 
+ void _listClear(list_t* pList, funcDelete_t* fd);
+
 void test_string(FILE *pfile) {
     fprintf(pfile, "string\n");
     fprintf(pfile, "======\n");
@@ -222,6 +224,19 @@ void test_list(FILE *pfile) {
     // [j,i,h,g,f,e,d,c,b,a]
 
     listDelete(l8, (funcDelete_t*)&strDelete);
+
+    /* _listClear */
+    fprintf(pfile, "# _listClear\n");
+    list_t* l9 = listNew();
+    for(int i = 0; i < 20; i++){
+        listAddFirst(l9, strClone("a"));
+    }
+    listPrint(l9, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // [a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a]
+    _listClear(l9, (funcDelete_t*)&strDelete);
+    listPrint(l9, pfile, (funcPrint_t*)&strPrint); fprintf(pfile, "\n");
+    // []
+    listDelete(l9, (funcDelete_t*)&strDelete);
 }
 
 void test_hash_table(FILE* pfile) {

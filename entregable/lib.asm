@@ -16,6 +16,7 @@ global listRemove
 global listRemoveFirst
 global listRemoveLast
 global listDelete
+global _listClear
 global listPrint
 global _ptrPrint
 global hashTableNew

@@ -60,6 +60,9 @@ list
 # listPrintReverse
 [a,b,c,d,e,f,g,h,i,j]
 [j,i,h,g,f,e,d,c,b,a]
+# _listClear
+[a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a]
+[]
 
 hash table
 ==========
