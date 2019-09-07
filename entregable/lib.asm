@@ -116,7 +116,8 @@ _strCopy:
     ; rax = offset_src
 
     ; Limpio la parte alta de rdx (offset) para usarla como offset de dst
-    and rdx, LSH_MASK
+    mov r8, LSH_MASK
+    and rdx, r8
     ; Limpio rax para usarlo como offset de src
     xor rax, rax
 
@@ -996,7 +997,8 @@ hashTableDeleteSlot:
     sub rsp, 8
 
     ; Limpio la parte alta de rsi
-    and rsi, LSH_MASK
+    mov r8, LSH_MASK
+    and rsi, r8
 
     ; Hago clear de la lista que se encuentra en ese slot
     ;   void _listClear(list_t* pList, funcDelete_t* fd)
