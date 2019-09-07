@@ -270,13 +270,7 @@ strDelete:
     ;  Borra el string pasado por parámetro. Es equivalente a la función free.
 
     ; rdi = pString
-    
-    ; Alineo a 16
-    sub rsp, 8
-    
-    call free
-
-    add rsp, 8
+    jmp free
     ret
  
 strPrint:
