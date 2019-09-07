@@ -312,46 +312,44 @@ strPrint:
 ;                                   size    off     end
 ; typedef struct s_list{
 ;     struct s_listElem *first;     8       0       7
-;     struct s_listElem *last;      8       16      23
-; } list_t;                         24 (3B) -       -
+;     struct s_listElem *last;      8       8       15
+; } list_t;                         16      -       -
 ;
 ;                                   size    off     end
 ; typedef struct s_listElem{
 ;     void *data;                   8       0       7
 ;     struct s_listElem *next;      8       8       15
-;     struct s_listElem *prev;      8       16      23
-; } listElem_t;                     24 (3B) -       -
+;     struct s_listElem *prev;      8       16      24
+; } listElem_t;                     24      -       -
 
 %define NULL 0x0
 %define ptr qword
 
 %define LIST_OFFSET_FIRST 0
 %define LIST_OFFSET_LAST  8
-%define LIST_SIZE         3
+%define LIST_SIZE         16
 
 %define LIST_ELEM_OFFSET_DATA 0
 %define LIST_ELEM_OFFSET_NEXT 8
 %define LIST_ELEM_OFFSET_PREV 16
-%define LIST_ELEM_SIZE        3
+%define LIST_ELEM_SIZE        24
 
 listNew:
     ; list_t* listNew()
     ;  Crea una nueva list_t vacı́a donde los punteros a first y last estén 
     ;  inicializados en cero.
 
-    ; Armo stack frame para estar alineado
-    push rbp
-    mov rbp, rsp
+    sub rsp, 8
 
     ; Creo una nueva lista
     mov rdi, LIST_SIZE
     call malloc         ; rax = l
     
     ; Inicializo first y last en 0
-    mov ptr [rax + LIST_OFFSET_FIRST], NULL
-    mov ptr [rax + LIST_OFFSET_LAST], NULL
+    mov qword [rax + LIST_OFFSET_FIRST], NULL
+    mov qword [rax + LIST_OFFSET_LAST], NULL
 
-    pop rbp
+    add rsp, 8
     ret
 
 ; Rutina auxiliar
