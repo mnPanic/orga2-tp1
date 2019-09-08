@@ -8,7 +8,29 @@
 #include "lib.h"
 
 void test_hashTable(FILE *pfile){
-    // TODO
+    fprintf(pfile, "Test pedido\n");
+    fprintf(pfile, "===========\n");
+    // Deberá construirse un programa de prueba modificando el archivo main.c 
+    // para que realice las acciones detalladas a continuación, 
+    // una después de la otra:
+
+    char* ss[33] = {
+        ";",":","V","W","X","Y","Z","a","b","c","d",
+        "e","f","g","h","i","j","k","l","m","n","o",
+        "p","q","r","s","t","u","v","w","x","y","z"
+    };
+
+    // Crear una HashTable vacı́a de tamaño 33.
+    hashTable_t* t = hashTableNew(33, (funcHash_t*)&strHash);
+    // Agregar un string en todos los slots.
+    for(uint32_t i = 0; i < t->size; i++) {
+        hashTableAdd(t, strClone(ss[i]));
+    }
+    // Imprimir la HashTable.
+    hashTablePrint(t, pfile, (funcPrint_t*)&strPrint);
+
+    // La borro para no perder memoria
+    hashTableDelete(t, (funcDelete_t*)&strDelete);
 }
 
 // Llama a frpintf y borra el parámetro
@@ -20,6 +42,7 @@ void fprintfd(FILE* pfile, char* fmt, char* param) {
  void _listClear(list_t* pList, funcDelete_t* fd);
 
 void test_string(FILE *pfile) {
+    fprintf(pfile, "\n");
     fprintf(pfile, "string\n");
     fprintf(pfile, "======\n");
 
