@@ -996,20 +996,27 @@ hashTableDeleteSlot:
     ; esi = slot
     ; rdx = fd
 
-    sub rsp, 8
+    push r12
+    mov r12, rdx    ; r12 = fd
 
-    ; Limpio la parte alta de rsi
-    mov r8, LSH_MASK
-    and rsi, r8
+    ; Tengo que interpretar esi mod t->size
+    ; DIV r/m32
+    ;   Unsigned divide EDX:EAX by r/m32, with result stored in 
+    ;   EAX ← Quotient, EDX ← Remainder.
+    ; slot / size
+    mov eax, esi    ; eax = slot
+    xor rdx, rdx    ; limpio edx
+    mov ebx, [rdi + HASH_TABLE_OFFSET_SIZE] ; ebx = size
+    div ebx         ; edx = slot % size
 
     ; Hago clear de la lista que se encuentra en ese slot
     ;   void _listClear(list_t* pList, funcDelete_t* fd)
     mov rdi, [rdi + HASH_TABLE_OFFSET_ARRAY]           ; rdi = table->slots
-    mov rdi, [rdi + rsi * HASH_TABLE_ARRAY_ELEM_SIZE]  ; rdi = table->slots[slot]
-    mov rsi, rdx    ; rsi = fd
+    mov rdi, [rdi + rdx * HASH_TABLE_ARRAY_ELEM_SIZE]  ; rdi = table->slots[slot]
+    mov rsi, r12    ; rsi = fd
     call _listClear
 
-    add rsp, 8
+    pop r12
     ret
 
 hashTableDelete:
