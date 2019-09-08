@@ -921,6 +921,8 @@ hashTableNew:
     mov [r14 + HASH_TABLE_OFFSET_SIZE],     r12  ; table->size = size
     mov [r14 + HASH_TABLE_OFFSET_FN_HASH],  r13  ; table->funcHash = funcHash
 
+    dec r12  ; size-- para indexar correctamente
+
     ; Inicializo las listas
     .loop:
         cmp r12, 0  ; if size < 0
@@ -931,7 +933,7 @@ hashTableNew:
         
         ; Guardo su puntero en el índice actual
         ; puntero al inicio + tamaño del dato * index
-        mov [r15 + 8 * r12], rax    ; list[size] = l
+        mov [r15 + HASH_TABLE_ARRAY_ELEM_SIZE * r12], rax    ; list[size] = l
 
         dec r12     ; size--
         jmp .loop
