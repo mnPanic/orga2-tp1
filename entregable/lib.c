@@ -109,7 +109,12 @@ uint32_t strHash(char* pString) {
 }
 
 void hashTableRemoveAll(hashTable_t* pTable, void* data, funcCmp_t* fc, funcDelete_t* fd) {
-
+    // Borra todas las apariciones de data del slot al que pertenece. 
+    // Si el valor de fd no es cero, la utiliza para borrar los datos dados.
+    for (uint32_t i = 0; i < pTable->size; i++) {
+        list_t* l = pTable->listArray[i];
+        listRemove(l, data, fc, fd);
+    }
 }
 
 void hashTablePrint(hashTable_t* pTable, FILE *pFile, funcPrint_t* fp) {
